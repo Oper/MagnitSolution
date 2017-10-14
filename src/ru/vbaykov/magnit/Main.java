@@ -60,43 +60,46 @@ public class Main {
 	// write your code here
         ArrayList<Integer> list = new ArrayList<>();
         Main main = new Main();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
-            System.out.println("Введите адрес базы");
-            main.setUrl(reader.readLine());
-            System.out.println("Login");
-            main.setLogin(reader.readLine());
-            System.out.println("Password");
-            main.setPass(reader.readLine());
-            System.out.println("N число");
-            main.setN(Integer.parseInt(String.valueOf(Integer.parseInt(reader.readLine()))));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        main.setN(5);
+//        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
+//            System.out.println("Введите адрес базы");
+//            main.setUrl(reader.readLine());
+//            System.out.println("Login");
+//            main.setLogin(reader.readLine());
+//            System.out.println("Password");
+//            main.setPass(reader.readLine());
+//            System.out.println("N число");
+//            main.setN(Integer.parseInt(String.valueOf(Integer.parseInt(reader.readLine()))));
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        try (Connection connection = DriverManager.getConnection(main.getUrl(), main.getLogin(), main.getPass());
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "clamav100684");
         Statement statement = connection.createStatement()){
             //Чистим таблицу если не пустая
-            if (statement.getResultSet().next())
-            statement.executeUpdate("DELETE FROM TEST");
+            System.out.println("Opened database successfully");
+            //if (statement.getResultSet().next())
+            statement.executeUpdate("DELETE from TEST");
+            //statement.executeUpdate("CREATE TABLE TEST (FIELD INT)");
             //Вставка данных
-            for (int i = 0; i < main.getN(); i++) {
+            for (int i = 1; i < main.getN()+1; i++) {
                 if (i < 1000000)
-                statement.executeUpdate("INSERT INTO FIELD VALUES(" + i + ")");
+                statement.executeUpdate("INSERT INTO TEST (FIELD) VALUES (" + i + ")");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try (Connection connection = DriverManager.getConnection(main.getUrl(), main.getLogin(), main.getPass());
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "clamav100684");
              Statement statement = connection.createStatement()){
 
             //Получение и сохранение в List
-            ResultSet resultSet = statement.getResultSet();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM test");
             while (resultSet.next())
             {
                 list.add(resultSet.getInt(1));
@@ -126,10 +129,10 @@ public class Main {
             Transformer transformer = transformerFactory.newTransformer();
 
             DOMSource source = new DOMSource(document);
-            StreamResult result1 = new StreamResult(new File("C:\\1.xml"));
+            StreamResult result1 = new StreamResult(new File("//home/oper/1.xml"));
             transformer.transform(source, result1);
 
-            StreamResult result2 = new StreamResult(new File("C:\\2.xml"));
+            StreamResult result2 = new StreamResult(new File("//home/oper/2.xml"));
             transformer.transform((Source) result1, result2);
 
 
