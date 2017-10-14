@@ -80,7 +80,7 @@ public class Main {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "clamav100684");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "test");
         Statement statement = connection.createStatement()){
             //Чистим таблицу если не пустая
             System.out.println("Opened database successfully");
@@ -95,7 +95,7 @@ public class Main {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "clamav100684");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "test");
              Statement statement = connection.createStatement()){
 
             //Получение и сохранение в List
