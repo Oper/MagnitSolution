@@ -1,7 +1,7 @@
 package ru.vbaykov.magnit;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     //Данные для подключения к БД
@@ -65,12 +66,38 @@ public class Main {
         StreamResult out = new StreamResult(outputXSLT);
         transformer.transform(in, out);
     }
+    public List parsingXML(String dataXML)
+    {
+        ArrayList<Integer> list = new ArrayList<>();
+        try {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(new File(dataXML));
+
+            NodeList children = document.getElementsByTagName("entry");
+            for (int i = 0; i < children.getLength(); i++) {
+                Node node = children.item(i);
+                NamedNodeMap attributes = node.getAttributes();
+                Node attribut = attributes.getNamedItem("field");
+                String valueAttribut = attribut.getNodeValue();
+                list.add(Integer.parseInt(valueAttribut));
+            }
+
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public static void main(String[] args) {
         // write your code here
         ArrayList<Integer> list = new ArrayList<>();
         Main main = new Main();
-        main.setN(5);
+        main.setN(3);
 //        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))){
 //            System.out.println("Введите адрес базы");
 //            main.setUrl(reader.readLine());
@@ -93,7 +120,7 @@ public class Main {
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "test");
              Statement statement = connection.createStatement()) {
             //Чистим таблицу если не пустая
-            System.out.println("Opened database successfully");
+            //System.out.println("Opened database successfully");
             //if (statement.getResultSet().next())
             statement.executeUpdate("DELETE from TEST");
             //statement.executeUpdate("CREATE TABLE TEST (FIELD INT)");
@@ -138,11 +165,16 @@ public class Main {
             Transformer transformer = transformerFactory.newTransformer();
 
             DOMSource source = new DOMSource(document);
-            StreamResult result1 = new StreamResult(new File("//home/oper/1.xml"));
+            StreamResult result1 = new StreamResult(new File("1.xml"));
             transformer.transform(source, result1);
 
-            main.transform("//home/oper/1.xml", "/home/oper/IdeaProjects/MagnitSolution/src/styleXSLT.xsl", "//home/oper/2.xml");
-
+            main.transform("1.xml", "src/styleXSLT.xsl", "2.xml");
+            ArrayList<Integer> list1 = (ArrayList<Integer>) main.parsingXML("2.xml");
+            int result = 0;
+            for (int i = 0; i < list1.size(); i++) {
+                result += list1.get(i);
+            }
+            System.out.println(result);
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
