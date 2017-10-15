@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -56,8 +57,17 @@ public class Main {
         this.n = n;
     }
 
+    public void transform(String dataXML, String inputXSL, String outputXSLT) throws TransformerException {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        StreamSource xslStream = new StreamSource(inputXSL);
+        Transformer transformer = factory.newTransformer(xslStream);
+        StreamSource in = new StreamSource(dataXML);
+        StreamResult out = new StreamResult(outputXSLT);
+        transformer.transform(in, out);
+    }
+
     public static void main(String[] args) {
-	// write your code here
+        // write your code here
         ArrayList<Integer> list = new ArrayList<>();
         Main main = new Main();
         main.setN(5);
@@ -81,27 +91,26 @@ public class Main {
             e.printStackTrace();
         }
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "test");
-        Statement statement = connection.createStatement()){
+             Statement statement = connection.createStatement()) {
             //Чистим таблицу если не пустая
             System.out.println("Opened database successfully");
             //if (statement.getResultSet().next())
             statement.executeUpdate("DELETE from TEST");
             //statement.executeUpdate("CREATE TABLE TEST (FIELD INT)");
             //Вставка данных
-            for (int i = 1; i < main.getN()+1; i++) {
+            for (int i = 1; i < main.getN() + 1; i++) {
                 if (i < 1000000)
-                statement.executeUpdate("INSERT INTO TEST (FIELD) VALUES (" + i + ")");
+                    statement.executeUpdate("INSERT INTO TEST (FIELD) VALUES (" + i + ")");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/TEST", "pgadmin", "test");
-             Statement statement = connection.createStatement()){
+             Statement statement = connection.createStatement()) {
 
             //Получение и сохранение в List
             ResultSet resultSet = statement.executeQuery("SELECT * FROM test");
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 list.add(resultSet.getInt(1));
             }
         } catch (SQLException e) {
@@ -132,8 +141,7 @@ public class Main {
             StreamResult result1 = new StreamResult(new File("//home/oper/1.xml"));
             transformer.transform(source, result1);
 
-            StreamResult result2 = new StreamResult(new File("//home/oper/2.xml"));
-            transformer.transform((Source) result1, result2);
+            main.transform("//home/oper/1.xml", "/home/oper/IdeaProjects/MagnitSolution/src/styleXSLT.xsl", "//home/oper/2.xml");
 
 
         } catch (ParserConfigurationException e) {
