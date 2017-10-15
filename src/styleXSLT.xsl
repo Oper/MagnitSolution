@@ -4,7 +4,7 @@
         <entries>
             <xsl:for-each select="entries/entry">
                 <entry>
-                    <xsl:attribute name="filed"><xsl:value-of select="field"/></xsl:attribute>
+                    <xsl:attribute name="field"><xsl:value-of select="field"/></xsl:attribute>
                 </entry>
             </xsl:for-each>
         </entries>
