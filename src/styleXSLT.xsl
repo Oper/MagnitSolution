@@ -3,7 +3,9 @@
     <xsl:template match="/">
         <entries>
             <xsl:for-each select="entries/entry">
-                <xsl:value-of select="field"/>
+                <entry>
+                    <xsl:attribute name="filed"><xsl:value-of select="field"/></xsl:attribute>
+                </entry>
             </xsl:for-each>
         </entries>
     </xsl:template>
