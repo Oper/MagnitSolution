@@ -47,7 +47,7 @@ public class Main {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ArrayList<Integer> list = dBworker.getList();
+        ArrayList<Long> list = dBworker.getList();
         //Работа с xml
         try {
 
@@ -77,7 +77,7 @@ public class Main {
         String pass;
         //Число N
         int n;
-        volatile ArrayList<Integer> list = new ArrayList<>();
+        volatile ArrayList<Long> list = new ArrayList<Long>();
 
         void setUrl(String url) {
             this.url = url;
@@ -95,7 +95,7 @@ public class Main {
             this.n = n;
         }
 
-        ArrayList<Integer> getList() {
+        ArrayList<Long> getList() {
             return list;
         }
 
@@ -118,7 +118,7 @@ public class Main {
                 //Получение и сохранение в List
                 ResultSet resultSet = statement.executeQuery("SELECT * FROM test");
                 while (resultSet.next()) {
-                    list.add(resultSet.getInt(1));
+                    list.add(resultSet.getLong(1));
                 }
                 this.interrupt();
             } catch (SQLException e) {
@@ -161,7 +161,7 @@ public class Main {
             return list;
         }
 
-        void createXML(List<Integer> list, String outputXML) {
+        void createXML(List<Long> list, String outputXML) {
             try {
                 DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = builderFactory.newDocumentBuilder();
