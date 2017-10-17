@@ -42,6 +42,7 @@ public class Main {
         dBworker.setPass(pass);
         dBworker.setN(n);
         dBworker.start();
+        //Ждем
         try {
             dBworker.join(timeout);
         } catch (InterruptedException e) {
@@ -111,7 +112,6 @@ public class Main {
                 //Чистим таблицу если не пустая
                 statement.executeUpdate("DELETE from TEST");
                 //Вставка данных
-
                 for (int y = 1; y < this.n + 1; y++) {
                     statement.executeUpdate("INSERT INTO TEST (FIELD) VALUES (" + y + ")");
                 }
